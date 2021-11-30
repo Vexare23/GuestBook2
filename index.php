@@ -1,4 +1,7 @@
-
+<?php
+date_default_timezone_set('Europe/Helsinki');
+$date = date('m/d/Y h:i:s a', time());
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +20,7 @@
 
 <div class="jumbotron">
     <div class="container">
-        <h1>Hello, world!</h1>
+        <h1>Hello, world! It is now: <?php echo $date; ?> </h1>
 
         <p>This is a template for a simple marketing or informational website. It includes a large callout called the
             hero unit and three supporting pieces of content. Use it as a starting point to create something more

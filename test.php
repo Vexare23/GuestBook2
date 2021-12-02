@@ -1,12 +1,22 @@
-<?php
-    try {
-$pdo = new PDO('sqlite:Assigment1.db');
-$result = $pdo->query('SELECT * FROM siteData');
+<form action="/index.php" method="POST">
+    <button type="submit" class="btn btn-primary">
+        <span class="glyphicon glyphicon-heart"></span>
+        Delete database
+        <?php $pdo->exec("DELETE FROM siteData;"); ?>
+    </button>
+</form>
 
-$rows = $result->fetchAll(PDO::FETCH_ASSOC);
-echo "<pre>";
-    var_dump($rows);
-    echo "</pre>";
-} catch (PDOException $e){
-echo 'ERROR UPDATING CONTENT: ' . $e->getMessage();
-}
+var_dump($siteData); die;
+
+print "<table border=1>";
+    print "<tr><td>name</td><td>email</td><td>message</td></tr>";
+    $result = $pdo->query('SELECT * FROM siteData');
+    foreach($result as $row)
+    {
+    print "<tr><td>".$row['name']."</td>";
+        print "<td>".$row['email']."</td>";
+        print "<td>".$row['message']."</td>";
+        }
+        print "</table>";
+
+$pdo = NULL;

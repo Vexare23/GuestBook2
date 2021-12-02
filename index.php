@@ -1,9 +1,20 @@
 <?php
 
-
 $name = $_POST['name'];
 $email = $_POST['email'];
 $message = $_POST['message'];
+
+
+
+$jsonData = array(
+    'name' => $name,
+    'email' => $email,
+    'message' => $message,
+);
+$pdo = new PDO("sqlite:".__DIR__."/Assigment1.db");
+$result = $pdo->query('SELECT * FROM siteData');
+$siteData = $result->fetchAll();
+
 $nameErr = $emailErr = $messageErr = "";
 date_default_timezone_set('Europe/Helsinki');
 $date = date('m/d/Y h:i:s a', time());
@@ -36,13 +47,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $messageErr = "";
     }
 }
-$siteData = array(
-        'name' => $name,
-        'email' => $email,
-        'message' => $message,
-);
-$json = json_encode($siteData,JSON_PRETTY_PRINT);
-file_put_contents('data/siteData', $json);
+
+
+$json = json_encode($jsonData,JSON_PRETTY_PRINT);
+file_put_contents('data/jsonData', $json);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -80,7 +88,9 @@ file_put_contents('data/siteData', $json);
         </div>
         <div class="form-group">
             <label for="message" class="control-label" >Message:</label>
-            <textarea name="message" rows="5" cols="40"></textarea>
+            <label>
+                <textarea name="message" rows="5" cols="40"></textarea>
+            </label>
             <span class="error">* <?php echo $messageErr;?></span>
             <br><br>
         </div>
@@ -89,13 +99,29 @@ file_put_contents('data/siteData', $json);
                 ADD
             </button>
         </form>
+        <?php
+        $pdo->exec("INSERT INTO siteData (name, email, message ) VALUES ('$name', '$email', '$message');");
+
+
+        ?>
     </div>
 </div>
 <hr>
 Json file content:
 <?php var_dump($json);?>
 <hr>
+<hr>
+Data bases content:
 
+<?php var_dump($siteData);?>
+<hr>
+<form action="/index.php" method="POST">
+    <button type="submit" class="btn btn-primary">
+        <span class="glyphicon glyphicon-heart"></span>
+        Delete database
+        <?php $pdo->exec("DELETE FROM siteData;"); ?>
+    </button>
+</form>
 <div class="container">
     <div class="row">
         <div class="col-lg-4">

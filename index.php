@@ -5,7 +5,6 @@ $email = $_POST['email'];
 $message = $_POST['message'];
 
 
-
 $jsonData = array(
     'name' => $name,
     'email' => $email,
@@ -14,8 +13,9 @@ $jsonData = array(
 $pdo = new PDO("sqlite:".__DIR__."/Assigment1.db");
 $result = $pdo->query('SELECT * FROM siteData');
 $siteData = $result->fetchAll();
+//var_dump($siteData);//die();
 
-$nameErr = $emailErr = $messageErr = "";
+$nameErr = $emailErr = $messageErr = $generalErr = "";
 date_default_timezone_set('Europe/Helsinki');
 $date = date('m/d/Y h:i:s a', time());
 function test_input($data)
@@ -46,9 +46,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $message = test_input($_POST["message"]);
         $messageErr = "";
     }
+    if (empty($_POST["name"])||empty($_POST["email"])||empty($_POST["message"])) {
+        $generalErr = "One or more requirements are still needed!";
+    } else {
+        $pdo->exec("INSERT INTO siteData (name, email, message ) VALUES ('$name', '$email', '$message');");
+    }
+
+    //$pdo = new PDO("sqlite:".__DIR__."/Assigment1.db");
+    // $result = $pdo->query('SELECT * FROM siteData');
+    // $siteData = $result->fetchAll();
+    //var_dump($siteData);//die();
 }
-
-
 $json = json_encode($jsonData,JSON_PRETTY_PRINT);
 file_put_contents('data/jsonData', $json);
 ?>
@@ -74,83 +82,50 @@ file_put_contents('data/jsonData', $json);
         <hr>
         <p><span class="error">* required field</span></p>
         <form action="/index.php" method="POST">
-        <div class="form-group">
-            <label for="name" class="control-label">Name:</label>
-            <input type="text" name="name" id="name" class="form-control" />
-            <span class="error">* <?php echo $nameErr;?></span>
-            <br><br>
-        </div>
-        <div class="form-group">
-            <label for="email" class="control-label">Email:</label>
-            <input type="text" name="email" id="email" class="form-control" />
-            <span class="error">* <?php echo $emailErr;?></span>
-            <br><br>
-        </div>
-        <div class="form-group">
-            <label for="message" class="control-label" >Message:</label>
-            <label>
-                <textarea name="message" rows="5" cols="40"></textarea>
-            </label>
-            <span class="error">* <?php echo $messageErr;?></span>
-            <br><br>
-        </div>
+            <div class="form-group">
+                <label for="name" class="control-label">Name:</label>
+                <input type="text" name="name" id="name" class="form-control" />
+                <span class="error">* <?php echo $nameErr;?></span>
+                <br><br>
+            </div>
+            <div class="form-group">
+                <label for="email" class="control-label">Email:</label>
+                <input type="text" name="email" id="email" class="form-control" />
+                <span class="error">* <?php echo $emailErr;?></span>
+                <br><br>
+            </div>
+            <div class="form-group">
+                <label for="message" class="control-label" >Message:</label>
+                <label>
+                    <textarea name="message" rows="5" cols="40"></textarea>
+                </label>
+                <span class="error">* <?php echo $messageErr;?></span>
+                <br><br>
+            </div>
             <button type="submit" class="btn btn-primary">
                 <span class="glyphicon glyphicon-heart"></span>
                 ADD
             </button>
+            <?php echo $generalErr;?>
         </form>
-        <?php
-        $pdo->exec("INSERT INTO siteData (name, email, message ) VALUES ('$name', '$email', '$message');");
-
-
-        ?>
     </div>
 </div>
 <hr>
 Json file content:
 <?php var_dump($json);?>
 <hr>
+
 <hr>
 Data bases content:
 
 <?php var_dump($siteData);?>
 <hr>
-<form action="/index.php" method="POST">
-    <button type="submit" class="btn btn-primary">
-        <span class="glyphicon glyphicon-heart"></span>
-        Delete database
-        <?php $pdo->exec("DELETE FROM siteData;"); ?>
-    </button>
-</form>
-<div class="container">
-    <div class="row">
-        <div class="col-lg-4">
-            <h2>11</h2>
 
-            <p>1 </p>
-
-        </div>
-        <div class="col-lg-4">
-            <h2>22</h2>
-
-            <p>2 </p>
-
-        </div>
-        <div class="col-lg-4">
-            <h2>33</h2>
-
-            <p>3</p>
-
-        </div>
-    </div>
-
-    <hr>
-
-    <footer>
-        <p>Done by Suciu Andrei Cornel</p>
-    </footer>
-</div>
+<footer>
+    <p>Done by Suciu Andrei Cornel</p>
+</footer>
 
 </body>
 
 </html>
+
